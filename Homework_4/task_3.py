@@ -1,5 +1,3 @@
-import random
-
 n = input("Please enter a whole number between 0 and 1000: ")
 
 a = float(n)
