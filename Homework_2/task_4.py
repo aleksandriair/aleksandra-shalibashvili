@@ -3,7 +3,7 @@ speed = input("Please enter the speed: ")
 speed = int(speed)
 
 if speed < 0:
-    print("The number must be non-negative")
+    print("The number must be non-negative. Please try again.")
     exit(1)
 
 if speed >= 120:
