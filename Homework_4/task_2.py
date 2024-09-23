@@ -1,24 +1,24 @@
 import random
 
-n = input("Please enter a whole number between 0 and 30: ")
+number = input("Please enter a whole number between 0 and 30: ")
 
-a = float(n)
+a = float(number)
 b = int(a)
 
 if a != b:
     print("The number must be whole")
     exit(1)
 
-n = b
+number = b
 
-if n <= 0 or n >= 30:
+if number <= 0 or number >= 30:
     print("The number must be between 0 and 30")
     exit(1)
 
-print("We are going to print",n,"numbers:")
+print("We are going to print",number,"numbers:")
 
 numbers = []
-for i in range(n):
+for i in range(number):
     numbers.append(random.randint(0,1000))
 
 print(numbers)
