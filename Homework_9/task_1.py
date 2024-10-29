@@ -13,3 +13,5 @@ while denominator <= 2 * number - 1:
     counter += 1
 
 print(4 * result)
+
+# Wow, we get Pi :)))
