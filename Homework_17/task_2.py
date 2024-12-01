@@ -1,26 +1,41 @@
-def has_path(graph, start, end, visited=None):
-    if visited is None:
-        visited = set()
-        
-    if start == end:
-        return True
-        
-    visited.add(start)
+def check_path(graph, starting_point, ending_point):
+    visited = []
     
-    for neighbor in graph.get(start, []):
-        if neighbor not in visited and has_path(graph, neighbor, end, visited):
+    if starting_point == ending_point:
+        return True
+    
+    for next_point in graph.get(starting_point,[]):
+        if next_point not in visited and check_path(graph, next_point, ending_point):
             return True
-            
+        
     return False
 
-# Example graph
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D'],
-    'C': ['E'],
-}
+def main():
+    graph_1 = {
+        "A": ["B", "C"],
+        "B": ["D"],
+        "C": ["E"],
+    }
 
-# Test cases
-print(has_path(graph, 'A', 'E'))  # True
-print(has_path(graph, 'B', 'C'))  # False
-print(has_path(graph, 'A', 'D'))  # True
+    print(check_path(graph_1, "A", "B")) # True
+    print(check_path(graph_1, "B", "A")) # False
+    print(check_path(graph_1, "A", "E")) # True
+    print(check_path(graph_1, "E", "B")) # False
+    
+    print(f"{30 * "-"}")
+    
+    graph_2 = {
+        "Tbilisi": ["Gori", "Telavi"],
+        "Telavi": ["Akhmeta", "Tbilisi"],
+        "Gori": ["Khashuri", "Tbilisi"],
+        "Khashuri": ["Borjomi", "Kutaisi", "Tbilisi"],
+        "Kutaisi": ["Zugdidi", "Mestia", "Khashuri"]
+    }
+
+    print(check_path(graph_2, "Tbilisi", "Borjomi")) # True
+    print(check_path(graph_2, "Mestia", "Kutaisi")) # False
+    print(check_path(graph_2, "Gori", "Zugdidi")) # True
+    print(check_path(graph_2, "Telavi", "Borjomi")) # True
+
+if __name__ == "__main__":
+    main()
