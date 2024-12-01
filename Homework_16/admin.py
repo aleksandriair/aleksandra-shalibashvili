@@ -39,6 +39,34 @@ def add_session():
     sessions.append(session)
 
 
+def remove_session():
+    print("Removing session")
+    if not sessions:
+        print("No sessions found to remove")
+        return
+        
+    print("Current sessions:")
+    list_sessions()
+    
+    session_id = input("Enter the session ID to remove: ")
+    try:
+        session_id = int(session_id)
+        session_found = False
+        
+        for i, session in enumerate(sessions):
+            if session['session_id'] == session_id:
+                del sessions[i]
+                print(f"Session {session_id} removed successfully")
+                session_found = True
+                break
+                
+        if not session_found:
+            print(f"No session found with ID {session_id}")
+            
+    except ValueError:
+        print("Invalid session ID. Please enter a number")
+
+
 def list_sessions():
     print("Listing sessions")
     if not sessions:
