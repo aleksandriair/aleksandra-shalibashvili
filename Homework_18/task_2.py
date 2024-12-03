@@ -51,10 +51,10 @@ def analyze_sales(input_file):
     
     # შესყიდვების ღირებულების საშუალო არითმეტიკულის გამოთვლა
     
-    average_order_spending = sum(all_order_totals)/len(all_order_totals)
+    average_order_spending = sum(all_order_totals) / len(all_order_totals)
     
     # შესყიდვების რაოდენობების საშუალო არითმეტიკულის გამოთვლა
-    average_order_quantity = sum(all_order_quantities)/len(all_order_quantities)
+    average_order_quantity = sum(all_order_quantities) / len(all_order_quantities)
     
     # ყველაზე დიდი რაოდენობით გაყიდული პროდუქტის პოვნა
     highest_quantity_sold = 0
