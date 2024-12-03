@@ -1,64 +1,106 @@
+import os
 import json
-from collections import defaultdict
 
-def analyze_sales(filename):
-    purchases_by_user = defaultdict(list)
-    product_quantities = defaultdict(int)
+def analyze_sales(input_file):
     
-    with open(filename, 'r') as f:
-        for line in f:
-            user, product, amount, price = line.strip().split(',')
-            amount = int(amount)
+    highest_quantity = 0
+    highest_quantity_users = []
+    total_amount_by_users = {}
+    all_order_totals = []
+    all_order_quantities = []
+    total_quantity_by_products = {}
+
+    
+    with open(input_file, "r") as file:
+        for line in file:
+            user, product, quantity, price = line.strip().split(",")
+            quantity = int(quantity)
             price = float(price)
-            total = amount * price
+            total = quantity * price
             
-            purchases_by_user[user].append({
-                'amount': amount,
-                'total': total
-            })
-            product_quantities[product] += amount
+            all_order_totals.append(total)
+            all_order_quantities.append(quantity)
+            
+            # ერთ შეკვეთაში მაქსიმალური შესყიდვის რაოდენობა და მომხმარებელი
+            if quantity > highest_quantity:
+                highest_quantity = quantity
+                highest_quantity_users = [user]
+            elif quantity == highest_quantity:
+                highest_quantity_users.append(user)
+                
+            # ჯამური ღირებულება მომხმარებლების მიხედვით
+            if user not in total_amount_by_users:
+                total_amount_by_users[user] = 0
+            total_amount_by_users[user] += total
+            
+            # ჯამური რაოდენობა პროდუქტების მიხედვით
+            if product not in total_quantity_by_products:
+                total_quantity_by_products[product] = 0
+            total_quantity_by_products[product] += quantity
+            
+    # მაქსიმალური ღირებულების გამნახორციელებელი მომხმარებლის პოვნა
+    highest_total = 0
+    highest_spending_users = []
     
-    max_quantity = max(
-        (sum(p['amount'] for p in purchases), user)
-        for user, purchases in purchases_by_user.items()
-    )
-    max_quantity_users = [
-        user for user in purchases_by_user
-        if sum(p['amount'] for p in purchases_by_user[user]) == max_quantity[0]
-    ]
+    for user, total in total_amount_by_users.items():
+        if total > highest_total:
+            highest_total = total
+            highest_spending_users = [user]
+        elif total == highest_total:
+            highest_spending_users.append(user)
     
-    max_value = max(
-        (sum(p['total'] for p in purchases), user)
-        for user, purchases in purchases_by_user.items()
-    )
-    max_value_users = [
-        user for user in purchases_by_user
-        if sum(p['total'] for p in purchases_by_user[user]) == max_value[0]
-    ]
+    # შესყიდვების ღირებულების საშუალო არითმეტიკულის გამოთვლა
     
-    all_purchases = [p for purchases in purchases_by_user.values() for p in purchases]
-    avg_value = sum(p['total'] for p in all_purchases) / len(all_purchases)
-    avg_quantity = sum(p['amount'] for p in all_purchases) / len(all_purchases)
+    average_order_spending = sum(all_order_totals)/len(all_order_totals)
     
-    max_sold = max(product_quantities.values())
-    most_sold_products = [
-        product for product, quantity in product_quantities.items()
-        if quantity == max_sold
-    ]
+    # შესყიდვების რაოდენობების საშუალო არითმეტიკულის გამოთვლა
+    average_order_quantity = sum(all_order_quantities)/len(all_order_quantities)
     
-    stats = {
-        "max_quantity_users": max_quantity_users,
-        "max_value_users": max_value_users,
-        "average_purchase_value": round(avg_value, 2),
-        "average_purchase_quantity": round(avg_quantity, 2),
-        "most_sold_products": most_sold_products
+    # ყველაზე დიდი რაოდენობით გაყიდული პროდუქტის პოვნა
+    highest_quantity_sold = 0
+    highest_sold_products = []
+    
+    for product, quantity in total_quantity_by_products.items():
+        if quantity > highest_quantity_sold:
+            highest_quantity_sold = quantity
+            highest_sold_products = [product]
+        elif quantity == highest_quantity_sold:
+            highest_sold_products.append(product)
+    
+    # შეჯამების გაკეთება
+    summary = {
+        "highest_quantity_per_order": {
+            "quantity": highest_quantity,
+            "users": highest_quantity_users
+        },
+        "highest_total_spending": {
+            "amount": highest_total,
+            "users": highest_spending_users
+        },
+        "average_order": {
+            "amount": round(average_order_spending, 2),
+            "quantity": round(average_order_quantity)
+        },
+        "highest_sold_products": {
+            "quantity": round(highest_quantity_sold),
+            "products": highest_sold_products
+        }
     }
     
-    with open('stats.json', 'w') as f:
-        json.dump(stats, f, indent=4)
+    return summary             
+     
+def write_summary_in_json(summary, input_file):
+    json_path = os.path.join(os.path.dirname(input_file), "stats.json")
+    with open(json_path, "w") as f:
+        json.dump(summary, f, indent=4) 
+
+       
+def main():
+    script_dir = os.path.dirname(os.path.abspath(__file__))     
+    sales_data = os.path.join(script_dir, "data_files", "data.txt")
     
-    return stats
+    summary = analyze_sales(sales_data)
+    write_summary_in_json(summary, sales_data)
 
 if __name__ == "__main__":
-    stats = analyze_sales('data.txt')
-    print(json.dumps(stats, indent=4))
+    main()

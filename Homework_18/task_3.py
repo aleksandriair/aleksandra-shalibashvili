@@ -1,8 +1,11 @@
-def database_connection():
-    print("Opening database connection...")
-    yield
-    print("Closing database connection...")
+from contextlib import contextmanager
 
-# Example usage
+@contextmanager
+def database_connection():
+    start = print("Opening database connection...")
+    yield
+    end = print("Closing database connection...")
+    
+    
 with database_connection():
     print("Performing database operations...")
