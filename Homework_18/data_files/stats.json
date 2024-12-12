@@ -1,0 +1,24 @@
+{
+    "highest_quantity_per_order": {
+        "quantity": 10,
+        "users": [
+            "sam_jones"
+        ]
+    },
+    "highest_total_spending": {
+        "amount": 30.0,
+        "users": [
+            "peter_black"
+        ]
+    },
+    "average_order": {
+        "amount": 11.88,
+        "quantity": 3
+    },
+    "highest_sold_products": {
+        "quantity": 10,
+        "products": [
+            "orange"
+        ]
+    }
+}
